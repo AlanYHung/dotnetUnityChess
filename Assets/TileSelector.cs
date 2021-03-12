@@ -2,43 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//https://www.raywenderlich.com/5441-how-to-make-a-chess-game-with-unity
 public class TileSelector : MonoBehaviour
 {
-  public GameObject tileHighlightPrefab;
-  private GameObject tileHighlight;
-  public GameObject selectedObject = null;
+  public GameObject selectedObject;
+  //public GameObject tileHighlightPrefab;
+  //private GameObject tileHighlight;
 
   // Start is called before the first frame update
   void Start()
   {
     Vector2Int gridPoint = Geometry.GridPoint(0, 0);
     Vector3 point = Geometry.PointFromGrid(gridPoint);
-    tileHighlight = Instantiate(tileHighlightPrefab, point, Quaternion.identity);
-    tileHighlight.SetActive(false);
+    //tileHighlight = Instantiate(tileHighlightPrefab, point, Quaternion.identity);
+    //tileHighlight.SetActive(false);
   }
 
   // Update is called once per frame
   void Update()
   {
     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
     RaycastHit hit;
+
     if (Physics.Raycast(ray, out hit))
     {
       Vector3 point = hit.point;
       Vector2Int gridPoint = Geometry.GridFromPoint(point);
-
-      tileHighlight.SetActive(true);
-      tileHighlight.transform.position =
-          Geometry.PointFromGrid(gridPoint);
-
       GameObject hitObject = hit.transform.root.gameObject;
 
-      SelectObject(hitObject);
+      if(Input.GetMouseButtonDown(0))
+      {
+        SelectObject(hitObject);
+      }
+      //tileHighlight.transform.position = hitObject.transform.position;
+      //tileHighlight.SetActive(true);
     }
     else
     {
-      tileHighlight.SetActive(false);
+      //tileHighlight.SetActive(false);
     }
   }
 
@@ -55,14 +56,6 @@ public class TileSelector : MonoBehaviour
     }
 
     selectedObject = hitObj;
-
-    Renderer[] pieces = selectedObject.GetComponentsInChildren<Renderer>();
-
-    foreach(Renderer r in pieces)
-    {
-      Material m = r.material;
-      m.color = Color.yellow;
-    }
   }
 
   void ClearSelection()
